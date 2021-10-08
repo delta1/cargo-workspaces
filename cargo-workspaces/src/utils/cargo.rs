@@ -283,7 +283,7 @@ pub fn change_versions(
 ) -> Result<String> {
     parse(
         manifest,
-        false,
+        true,
         |line, new_lines| {
             if let Some(new_version) = versions.get(pkg_name) {
                 if let Some(caps) = VERSION.captures(line) {
@@ -545,6 +545,25 @@ mod test {
                 [dependencies.this]
                 path = "../"
                 version = "0.3.0" # hello"#
+            }
+        );
+    }
+
+    #[test]
+    fn test_dev_dependencies_version() {
+        let m = indoc! {r#"
+            [dev-dependencies]
+            this2 = { path = "../", version = "0.0.1", package = "this" } # hello
+        "#};
+
+        let mut v = Map::new();
+        v.insert("this".to_string(), Version::parse("0.3.0").unwrap());
+
+        assert_eq!(
+            change_versions(m.into(), "this", &v, false).unwrap(),
+            indoc! {r#"
+                [dev-dependencies]
+                this2 = { path = "../", version = "0.3.0", package = "this" } # hello"#
             }
         );
     }

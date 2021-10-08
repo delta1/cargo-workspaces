@@ -93,6 +93,10 @@ pub struct GitOpt {
         setting(ArgSettings::ForbidEmptyValues)
     )]
     pub git_remote: String,
+
+    /// Sign the commit with the key set up in git-config
+    #[clap(short, long)]
+    pub sign_commit: bool,
 }
 
 impl GitOpt {
@@ -195,6 +199,9 @@ impl GitOpt {
             }
 
             let mut args = vec!["commit".to_string()];
+            if self.sign_commit {
+                args.push("-S".to_string());
+            }
 
             if self.amend {
                 args.push("--amend".to_string());

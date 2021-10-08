@@ -40,3 +40,6 @@ dunce = "1.0.1"
 assert_cmd = "1.0"
 insta = { version = "0.16.0", features = ["redactions"] }
 indoc = "1.0.3"
+
+[features]
+vendored-openssl = ["crates-index/vendored-openssl"]

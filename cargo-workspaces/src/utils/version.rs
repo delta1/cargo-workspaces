@@ -76,6 +76,10 @@ pub struct VersionOpt {
     /// Skip confirmation prompt
     #[clap(short, long)]
     pub yes: bool,
+
+    /// Skip cargo update command
+    #[clap(short, long)]
+    pub skip_update: bool,
 }
 
 impl VersionOpt {
@@ -150,11 +154,13 @@ impl VersionOpt {
             )?;
         }
 
-        for (pkg, _) in &new_versions {
-            let output = cargo(&metadata.workspace_root, &["update", "-p", pkg])?;
+        if !self.skip_update {
+            for (pkg, _) in &new_versions {
+                let output = cargo(&metadata.workspace_root, &["update", "-p", pkg])?;
 
-            if output.1.contains("error:") {
-                return Err(Error::Update);
+                if output.1.contains("error:") {
+                    return Err(Error::Update);
+                }
             }
         }
 
