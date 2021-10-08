@@ -12,11 +12,6 @@ readme = "README.md"
 name = "cargo-workspaces"
 path = "src/main.rs"
 
-[[bin]]
-name = "cargo-ws"
-path = "src/main.rs"
-test = false
-
 [profile.release]
 lto = "thin"
 
