@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+    branches:
+      - master
+      - release-*
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tag
+        run: |
+          echo "TAG=$(basename ${{github.ref}})" >> $GITHUB_ENV
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --features vendored-openssl --manifest-path cargo-workspaces/Cargo.toml
+      - uses: actions/upload-artifact@v2
+        with:
+          name: "cargo-workspaces-${{ env.TAG }}-x86_64-linux-gnu"
+          path: cargo-workspaces/target/release/cargo-workspaces

@@ -3,7 +3,7 @@ use assert_cmd::Command;
 use std::str::from_utf8;
 
 pub fn run(dir: &str, args: &[&str]) -> (String, String) {
-    let output = Command::cargo_bin("cargo-ws")
+    let output = Command::cargo_bin("cargo-workspaces")
         .unwrap()
         .current_dir(dir)
         .args(args)
